@@ -26,7 +26,7 @@ jobs:
         
       - name: Build and Push Backend Docker image
         run: |
-          cd ../../
-          docker build -t $DOCKER_USER/backend:${{ vars.DEV }}  --file Dockerfile . 
+          
+          docker build -t $DOCKER_USER/backend:${{ vars.DEV }}  --file ../../Dockerfile . 
 
     
