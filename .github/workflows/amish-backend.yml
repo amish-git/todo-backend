@@ -15,8 +15,8 @@ jobs:
   build:
 
     runs-on: self-hosted
-    # environment:  
-    #       name: dev 
+    environment:  
+          name: dev 
     steps:
       - name: Checkout repository code 
         uses: actions/checkout@v4
@@ -28,6 +28,6 @@ jobs:
         
       - name: Build and Push Backend Docker image
         run: |
-          docker build . -t $DOCKER_USER  --file Dockerfile 
+          docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} --file Dockerfile 
 
     
