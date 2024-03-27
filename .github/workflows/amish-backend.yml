@@ -29,10 +29,13 @@ jobs:
 
       - name: Build and Tag Backend Docker image for DEV environment
         run: |
-            docker build . -t $DOCKER_USER/backend:dev --file Dockerfile 
+            git_commit_hash=$( git rev-parse --short "$GITHUB_SHA")
+            docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} --file Dockerfile 
+            docker tag $DOCKER_USER/backend:${{ vars.DEV }}  $DOCKER_USER/backend:$(git_commit_hash)
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:dev)
+          docker push $DOCKER_USER/backend:${{ vars.DEV }}
+          docker push $DOCKER_USER/backend:$(git_commit_hash)
 
   prod:
     runs-on: self-hosted
