@@ -30,15 +30,15 @@ jobs:
         
       - name: Build and Tag Backend Docker image for DEV environment
         run: |
-          (docker build . -t $DOCKER_USER/backend:${{ matrix.DEV }} --file Dockerfile) 
+          (docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} --file Dockerfile) 
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:${{ matrix.DEV }} )
+          (docker push $DOCKER_USER/backend:${{ vars.DEV }} )
 
       - name: Build and Tag Backend Docker image for PROD environment
         run: |
-          (docker build . -t $DOCKER_USER/backend:${{ matrix.PROD }} --file Dockerfile) 
+          (docker build . -t $DOCKER_USER/backend:${{ vars.PROD }} --file Dockerfile) 
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:${{ matrix.PROD }} ) 
+          (docker push $DOCKER_USER/backend:${{ vars.PROD }} ) 
 
