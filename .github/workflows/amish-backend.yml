@@ -2,9 +2,8 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches: [ "main", "dev" ]
+  
 env:
   DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
@@ -12,12 +11,12 @@ env:
 
 jobs:   
   
-  build-and-push:
-
+  deploy_on_dev:
+    name: Dev
     runs-on: self-hosted
     strategy:
       matrix:
-        environment: [dev,prod]
+        environment: [DEV,PROD]
 
     steps:
       - name: Checkout repository code 
@@ -27,18 +26,32 @@ jobs:
         
         run: |
           docker login -u "$DOCKER_USER" -p "$DOCKER_PASSWORD"
-        
+      
+      - name: Tagging based on branch
+        id: tag
+        run: |
+          if [ "GITHUB_REF" == "refs/heads/main" ]; then
+              TAG=${{ matrix.PROD }}
+          elif [ "GITHUB_REF" == "refs/heads/dev" ]; then
+               TAG=${{ matrix.DEV }}
+          else
+              exit 0
+          fi
+
+
       - name: Build and Tag Backend Docker image for DEV environment
         run: |
-          (docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} --file Dockerfile) 
+
+          
+          (docker build . -t $DOCKER_USER/${{ vars.IMAGE_NAME }}:${{ vars.DEV }} --file Dockerfile) 
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:${{ vars.DEV }} )
+          (docker push $DOCKER_USER/${{ vars.IMAGE_NAME }}:${{ vars.DEV }} )
 
       - name: Build and Tag Backend Docker image for PROD environment
         run: |
-          (docker build . -t $DOCKER_USER/backend:${{ vars.PROD }} --file Dockerfile) 
+          (docker build . -t $DOCKER_USER/${{ vars.IMAGE_NAME }}:${{ vars.PROD }} --file Dockerfile) 
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:${{ vars.PROD }} ) 
+          (docker push $DOCKER_USER/${{ vars.IMAGE_NAME}}:${{ vars.PROD }} ) 
 
