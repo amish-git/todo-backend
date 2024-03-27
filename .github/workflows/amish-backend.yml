@@ -13,11 +13,9 @@ jobs:
   deployment:  
     name: Selecting environment 
     runs-on: self-hosted
-    strategy:
-      matrix:
-        environment: [dev,prod]
+
   
-    # if: github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/dev'
     environment: dev
     steps:
       - name: Checkout repository code 
