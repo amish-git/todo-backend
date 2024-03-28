@@ -55,5 +55,5 @@ jobs:
             docker build . -t $DOCKER_USER/backend:${{ vars.PROD }} -t $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA" ) 
       - name: Docker Push
         run: |
-          (docker push $DOCKER_USER/backend:${{ vars.PROD }})
-          docker push $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA"")
+          docker push $DOCKER_USER/backend:${{ vars.PROD }}
+          docker push $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA")
