@@ -29,13 +29,11 @@ jobs:
 
       - name: Build and Tag Backend Docker image for DEV environment
         run: |
-            git_commit_hash=$( git rev-parse --short "$GITHUB_SHA")
-            docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} --file Dockerfile 
-            docker tag $DOCKER_USER/backend:${{ vars.DEV }}  $DOCKER_USER/backend:$(git_commit_hash)
+            docker build . -t $DOCKER_USER/backend:${{ vars.DEV }} -t $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA" )
       - name: Docker Push
         run: |
+          docker push $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA"")
           docker push $DOCKER_USER/backend:${{ vars.DEV }}
-          docker push $DOCKER_USER/backend:$(git_commit_hash)
 
   prod:
     runs-on: self-hosted
@@ -54,7 +52,8 @@ jobs:
 
       - name: Build and Tag Backend Docker image for PROD environment
         run: |
-            docker build . -t $DOCKER_USER/backend:${{ vars.PROD }} --file Dockerfile 
+            docker build . -t $DOCKER_USER/backend:${{ vars.PROD }} -t $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA" ) 
       - name: Docker Push
         run: |
           (docker push $DOCKER_USER/backend:${{ vars.PROD }})
+          docker push $DOCKER_USER/backend:$(git rev-parse --short "$GITHUB_SHA"")
